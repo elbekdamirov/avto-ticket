@@ -120,49 +120,10 @@ const remove = async (req, res) => {
   }
 };
 
-const selectByTime = async (req, res) => {
-  const { full_name, start_time, end_time, category } = req.body;
-
-  const data = await Users.findAll({
-    where: { full_name },
-    include: [
-      {
-        model: Contract,
-        include: [
-          {
-            model: Machine,
-            attributes: ["name"],
-            include: [
-              {
-                model: Category,
-                where: { name: category },
-              },
-            ],
-          },
-        ],
-        attributes: ["start_time", "end_time"],
-        where: {
-          start_time: {
-            [Op.between]: [start_time, end_time],
-          },
-          end_time: {
-            [Op.between]: [start_time, end_time],
-          },
-        },
-      },
-    ],
-
-    attributes: ["full_name"],
-  });
-
-  res.status(200).send({ data });
-};
-
 module.exports = {
   create,
   getAll,
   getOne,
   update,
   remove,
-  selectByTime,
 };

@@ -68,6 +68,25 @@ const getAll = async (req, res) => {
   }
 };
 
+const update = async (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
+  try {
+    const [rowsUpdated, [patchValue]] = await UserRole.update(data, {
+      where: { id },
+      returning: true,
+    });
+
+    if (rowsUpdated == 0) {
+      res.status(400).send({ msg: "Data not found" });
+    }
+
+    res.status(200).send({ Updated: patchValue });
+  } catch (error) {
+    sendErrorResponse(error, res, 400);
+  }
+};
+
 const remove = async (req, res) => {
   try {
     const { userId, roleId } = req.body;
@@ -125,4 +144,5 @@ module.exports = {
   create,
   getAll,
   remove,
+  update
 };
